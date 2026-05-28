@@ -8,8 +8,8 @@ target/
 *.pdb
 
 # wasm-pack output
-# (we emit to src/web/wasm via --out-dir; pkg/ is the default fallback)
-src/web/wasm/
+# (we emit to web/wasm via --out-dir; pkg/ is the default fallback)
+web/wasm/
 pkg/
 
 # Node / Vite
@@ -42,3 +42,6 @@ desktop.ini
 
 # Test / coverage
 coverage/
+
+# VCV Rack reference checkouts (see docs/architecture.md → DSP Code)
+reference/

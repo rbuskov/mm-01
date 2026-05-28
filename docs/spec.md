@@ -1,4 +1,4 @@
-# MM-01 Synthesizer
+# MM-01 Specification
 
 MM-01 is a browser-based clone of the Roland SH-101 synthesizer. It faithfully reproduces the SH-101's full signal-path architecture and includes a playable on-screen keyboard for auditioning sounds and a built-in monophonic step sequencer. It does **not** include an arpeggiator.
 
