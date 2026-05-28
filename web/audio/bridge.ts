@@ -1,7 +1,10 @@
-// `?worker&url` makes Vite emit a bundled, self-contained ES module file for
-// the worklet (deps inlined) and gives us its URL. AudioWorklet just needs an
-// ES-module URL; the "worker" label is incidental.
-import workletUrl from "./worklet.ts?worker&url";
+// The worklet is pre-bundled by esbuild into a self-contained classic script
+// at `public/mm01-worklet.js` (see the `build:worklet` npm script). It must be
+// a classic script with no `import` statements: AudioWorkletGlobalScope cannot
+// resolve ES module imports, so anything Vite's `?worker&url` serves in dev
+// (raw ESM with an injected `vite/.../env.mjs` import) fails to register the
+// processor. Loading the pre-bundled file works identically in dev and build.
+const workletUrl = `${import.meta.env.BASE_URL}mm01-worklet.js`;
 
 export const TAG_NOTE_ON = 0;
 export const TAG_NOTE_OFF = 1;
