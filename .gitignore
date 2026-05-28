@@ -45,3 +45,7 @@ coverage/
 
 # VCV Rack reference checkouts (see docs/architecture.md → DSP Code)
 reference/
+
+# TS incremental build state
+tsconfig.tsbuildinfo
+**/tsconfig.tsbuildinfo
