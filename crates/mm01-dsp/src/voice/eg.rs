@@ -6,8 +6,15 @@
 //! the time ranges). The attack uses a gentler curve than decay/release.
 
 // Curvature ratios: larger = more linear, smaller = more sharply exponential.
+// These also set what level the nominal stage time reaches: the curve covers
+// the start→target span to within `ratio` over the stage time. A very small DR
+// ratio (e.g. 0.0001 → −80 dB) front-loads almost all the audible change into
+// the first ~half of the nominal time, so decay/release sound roughly twice as
+// fast as the knob says and overly "plinky". 0.02 keeps a clearly exponential
+// shape while making the audible decay/release time track the nominal time
+// (release reaches silence at ~95% of nominal).
 const TARGET_RATIO_A: f32 = 0.3;
-const TARGET_RATIO_DR: f32 = 0.0001;
+const TARGET_RATIO_DR: f32 = 0.02;
 
 #[derive(Clone, Copy, PartialEq)]
 enum Stage {
