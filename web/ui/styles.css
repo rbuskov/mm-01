@@ -187,3 +187,19 @@ html, body {
   font-size: 12px;
   color: #c4c8cc;
 }
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slider-name {
+  width: 52px;
+  font-size: 12px;
+  color: #c4c8cc;
+}
+.h-slider {
+  width: 140px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}

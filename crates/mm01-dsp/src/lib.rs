@@ -58,6 +58,15 @@ impl Engine {
             msg::PARAM_MIX_PULSE => self.voice.set_mix_pulse(value),
             msg::PARAM_MIX_SUB => self.voice.set_mix_sub(value),
             msg::PARAM_MIX_NOISE => self.voice.set_mix_noise(value),
+            msg::PARAM_AMP_SOURCE => self.voice.set_amp_source(value.round() as u8),
+            msg::PARAM_VOLUME => self.voice.set_volume(value),
+            msg::PARAM_ENV_ATTACK => self.voice.set_env_attack(value),
+            msg::PARAM_ENV_DECAY => self.voice.set_env_decay(value),
+            msg::PARAM_ENV_SUSTAIN => self.voice.set_env_sustain(value),
+            msg::PARAM_ENV_RELEASE => self.voice.set_env_release(value),
+            msg::PARAM_ENV_TRIGGER_MODE => self.voice.set_trigger_mode(value.round() as u8),
+            msg::PARAM_LFO_RATE => self.voice.set_lfo_rate(value),
+            msg::PARAM_LFO_WAVE => self.voice.set_lfo_wave(value.round() as u8),
             _ => {}
         }
     }

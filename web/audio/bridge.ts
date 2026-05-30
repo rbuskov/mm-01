@@ -18,6 +18,15 @@ export const PARAM_MIX_SAW = 3;
 export const PARAM_MIX_PULSE = 4;
 export const PARAM_MIX_SUB = 5;
 export const PARAM_MIX_NOISE = 6;
+export const PARAM_AMP_SOURCE = 7; // 0→ENV, 1→GATE
+export const PARAM_VOLUME = 8;
+export const PARAM_ENV_ATTACK = 9; // normalised 0..1
+export const PARAM_ENV_DECAY = 10;
+export const PARAM_ENV_SUSTAIN = 11;
+export const PARAM_ENV_RELEASE = 12;
+export const PARAM_ENV_TRIGGER_MODE = 13; // 0→GATE+TRIG, 1→GATE, 2→LFO
+export const PARAM_LFO_RATE = 14; // normalised 0..1
+export const PARAM_LFO_WAVE = 15; // 0→tri, 1→square, 2→random, 3→noise
 
 export function encodeNoteOn(note: number, velocity = 100): Uint8Array {
   return new Uint8Array([TAG_NOTE_ON, note & 0x7f, velocity & 0x7f]);

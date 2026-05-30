@@ -9,6 +9,15 @@ pub const PARAM_MIX_SAW: u8 = 3;
 pub const PARAM_MIX_PULSE: u8 = 4;
 pub const PARAM_MIX_SUB: u8 = 5;
 pub const PARAM_MIX_NOISE: u8 = 6;
+pub const PARAM_AMP_SOURCE: u8 = 7; // 0→ENV, 1→GATE
+pub const PARAM_VOLUME: u8 = 8;
+pub const PARAM_ENV_ATTACK: u8 = 9; // normalised 0..1
+pub const PARAM_ENV_DECAY: u8 = 10;
+pub const PARAM_ENV_SUSTAIN: u8 = 11;
+pub const PARAM_ENV_RELEASE: u8 = 12;
+pub const PARAM_ENV_TRIGGER_MODE: u8 = 13; // 0→GATE+TRIG, 1→GATE, 2→LFO
+pub const PARAM_LFO_RATE: u8 = 14; // normalised 0..1
+pub const PARAM_LFO_WAVE: u8 = 15; // 0→tri, 1→square, 2→random, 3→noise
 
 pub enum Msg {
     NoteOn { note: u8, velocity: u8 },
