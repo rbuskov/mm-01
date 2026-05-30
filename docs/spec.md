@@ -32,3 +32,41 @@ An on-screen keyboard is rendered below the (currently empty) synth panel for au
 - **Octave shift** — two buttons (or `-` / `+` keys) shift the computer-keyboard mapping up or down by one octave so the full range is reachable.
 
 There is no velocity sensitivity, no MIDI input, and no visual feedback beyond the key's pressed state.
+
+## Iteration 2: Oscillator and source mixer
+
+This iteration replaces the single-saw VCO from iteration 1 with the SH-101's full source section: one oscillator core producing three simultaneous waveforms, a noise generator, and a 4-input mixer that sums them into the voice's audio path. Everything downstream — filter, amp shaping, envelope, LFO — and PWM remain out of scope. The iteration-1 gate-controlled VCA stays in place so notes can still be auditioned.
+
+### Oscillator
+
+A single monophonic oscillator core. Pitch is set by the played note plus a **footage** selector (16′ / 8′ / 4′ / 2′, with 8′ as nominal — i.e. the note as played). All three waveform outputs come from the same core, so they are inherently phase-locked, and each gets its own level in the source mixer.
+
+- **Sawtooth** — full-range ramp.
+- **Pulse** — fixed 50% square. No width control and no modulation yet; PWM lands in a later iteration.
+- **Sub-oscillator** — derived from the master by frequency division. One shape at a time, picked by a 3-way selector:
+  - Square, one octave down (−1 oct)
+  - Square, two octaves down (−2 oct)
+  - Pulse, two octaves down (−2 oct), roughly 25% duty (narrower than the squares)
+
+### Noise
+
+White noise generator, independent of pitch. Feeds the mixer as a fourth source alongside the three oscillator outputs.
+
+### Source mixer
+
+Four linear-summing inputs, each with an independent level (0 → max):
+
+- Sawtooth
+- Pulse / square
+- Sub-oscillator (post select-switch)
+- Noise
+
+The mixer **does not normalise**. Several sources at full level deliberately sum past unity — that overdrive is part of the SH-101's character and is what drives the filter on the real unit in a later iteration. The mixer itself does no clipping; it just sums and outputs a single mono signal.
+
+### DSP notes
+
+The saw, pulse, and both sub-oscillator shapes have hard discontinuities and must be band-limited (PolyBLEP, wavetable, or equivalent) to avoid aliasing. Noise does not need band-limiting.
+
+### Out of scope
+
+PWM, VCF, envelope-shaped VCA, envelope generator, LFO, portamento, and any pitch/CV modulation. The iteration-1 gate-driven VCA remains, but only as a hard on/off — not the SH-101's full amp.

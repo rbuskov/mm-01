@@ -179,14 +179,16 @@ Both live in the worklet so they share a sample clock with the DSP:
 
 ## Iteration mapping
 
-The architecture above describes the full target. For iteration 1 (per [spec.md](spec.md)):
+The architecture above describes the full target. For iteration 2 (per [spec.md](spec.md)):
 
-- `mm01-dsp` ships with only `voice::vco` (saw), `voice::vca` (gate-controlled gain), and the parameter/message plumbing. `voice::vcf`, `eg`, `lfo`, `seq`, and `clock` modules are stubs or absent.
-- The protocol implements `NoteOn`, `NoteOff`, and `ParamSet` only. Transport, clock, and step messages come online with the sequencer iteration.
-- The MIDI layer is not wired up yet. The bridge module is present but only the on-screen keyboard produces `NoteOn`/`NoteOff`.
-- The UI ships the keyboard and an empty panel. Knobs/sliders for the rest of the signal path appear as their DSP counterparts land.
+- `voice::vco` expands to produce saw, pulse, and three selectable sub-oscillator shapes from a single phase accumulator — all phase-locked because they share the accumulator. All hard-edged outputs are band-limited via PolyBLEP from `primitives/`.
+- `voice::noise` lands — a new module producing white noise from an explicitly seeded xorshift (per the determinism rule in the DSP layer section).
+- `voice::mixer` lands — a 4-input linear summer with per-input gain. No clipping, no normalisation; the deliberate post-unity overdrive is the spec.
+- `voice::vca` from iteration 1 stays at the end of the chain, still gate-driven on/off. `voice::vcf`, `eg`, `lfo`, `seq`, and `clock` remain absent.
+- The protocol adds `ParamSet` IDs for footage, sub-osc shape select, and the four mixer levels. No new message *types* — the tagged-union is unchanged.
+- The UI gains a footage selector, a sub-osc shape selector, and four mixer level controls. Keyboard and bridge wiring are unchanged.
 
-No part of the iteration 1 scope contradicts the long-term shape; iterations add modules and message variants without restructuring the boundary.
+No part of the iteration 2 scope contradicts the long-term shape; we add modules and parameter IDs without restructuring the boundary.
 
 ### DSP Code
 
