@@ -70,3 +70,50 @@ The saw, pulse, and both sub-oscillator shapes have hard discontinuities and mus
 ### Out of scope
 
 PWM, VCF, envelope-shaped VCA, envelope generator, LFO, portamento, and any pitch/CV modulation. The iteration-1 gate-driven VCA remains, but only as a hard on/off — not the SH-101's full amp.
+
+## Iteration 3: Amp, envelope, and LFO
+
+This iteration replaces the iteration-1 gate-driven on/off VCA with the SH-101's real amp section — a proper VCA shaped by either the envelope or the gate — and adds the envelope and LFO modules behind it. The source mixer from iteration 2 still feeds the amp directly; the filter is still out of scope and is bypassed.
+
+### Amp (VCA)
+
+A single voltage-controlled amplifier, gain 0 → 1, driven by one control source picked by a 2-position switch:
+
+- **ENV** — gain follows the ADSR contour.
+- **GATE** — gain is full while any key is held, zero when released (organ-style on/off, no shaping).
+
+The amp output is then scaled by a master **Volume** control before leaving the voice.
+
+### Envelope (ADSR)
+
+One four-stage ADSR. Ranges from Roland's published spec:
+
+- **Attack**: 1.5 ms – 4 s
+- **Decay**: 2 ms – 10 s
+- **Sustain**: 0 – 100%
+- **Release**: 2 ms – 10 s
+
+Stage curves are **exponential**, not linear. The minimum attack (~1.5 ms) is very fast so percussive transients work.
+
+A three-position **Trigger mode** selector controls how new key events interact with the envelope:
+
+- **GATE+TRIG** — every new key press restarts the envelope from Attack, including on overlapping/legato notes.
+- **GATE** — the envelope starts on the first key and sustains across legato notes; it only restarts after a full release followed by a new key press.
+- **LFO** — while a key is held, the envelope is retriggered once per LFO cycle. This is the rhythmic-pulsing mode.
+
+### LFO
+
+One low-frequency oscillator.
+
+- **Rate**: 0.1 – 30 Hz
+- **Waveforms**: triangle, square, random (sample-and-hold), noise
+
+With the amp as the only destination this iteration, the LFO's *only* effect on audio is to supply the envelope's retrigger clock when **Trigger mode = LFO**. The LFO has no direct path to VCA gain — this is the faithful SH-101 routing, not a tremolo modulation. Consequently the waveform shape does **not** affect the amp this iteration: only the cycle rate matters (one envelope retrigger per LFO period). The waveform selector is still wired and starts mattering once LFO routes to filter/pitch appear in later iterations.
+
+### DSP notes
+
+ADSR stages are exponential, not linear — the difference is meaningful at the short end of the time ranges. The LFO's square output still benefits from PolyBLEP at the top of its rate range (a 30 Hz square is still a hard discontinuity). The two RNG-derived waveforms differ: "random" is one sample-and-hold step per LFO cycle, "noise" is continuous white noise.
+
+### Out of scope
+
+VCF, PWM, LFO → pitch, LFO → filter, direct LFO → amp (tremolo), bender, portamento, keyboard tracking, velocity sensitivity.

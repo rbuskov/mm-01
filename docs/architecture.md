@@ -179,16 +179,16 @@ Both live in the worklet so they share a sample clock with the DSP:
 
 ## Iteration mapping
 
-The architecture above describes the full target. For iteration 2 (per [spec.md](spec.md)):
+The architecture above describes the full target. For iteration 3 (per [spec.md](spec.md)):
 
-- `voice::vco` expands to produce saw, pulse, and three selectable sub-oscillator shapes from a single phase accumulator — all phase-locked because they share the accumulator. All hard-edged outputs are band-limited via PolyBLEP from `primitives/`.
-- `voice::noise` lands — a new module producing white noise from an explicitly seeded xorshift (per the determinism rule in the DSP layer section).
-- `voice::mixer` lands — a 4-input linear summer with per-input gain. No clipping, no normalisation; the deliberate post-unity overdrive is the spec.
-- `voice::vca` from iteration 1 stays at the end of the chain, still gate-driven on/off. `voice::vcf`, `eg`, `lfo`, `seq`, and `clock` remain absent.
-- The protocol adds `ParamSet` IDs for footage, sub-osc shape select, and the four mixer levels. No new message *types* — the tagged-union is unchanged.
-- The UI gains a footage selector, a sub-osc shape selector, and four mixer level controls. Keyboard and bridge wiring are unchanged.
+- `voice::vca` is rewritten. Gone is the gate-driven on/off; in its place is a continuous-gain VCA whose control input is selected (env vs gate) by a parameter. A master volume gain follows the VCA at the voice's output.
+- `voice::eg` lands — a four-stage ADSR with exponential per-stage ramps and the time/level ranges from the spec. Trigger mode (GATE+TRIG / GATE / LFO) is a parameter; in LFO mode the EG subscribes to the LFO's per-cycle tick.
+- `voice::lfo` lands — triangle, square, random (sample-and-hold), and noise outputs at 0.1 – 30 Hz. The square uses PolyBLEP from `primitives/`. The LFO's only consumer this iteration is `voice::eg` (in LFO trigger mode); there is intentionally no audio-rate path from the LFO to the VCA.
+- `voice::vco`, `voice::noise`, and `voice::mixer` from iteration 2 are unchanged. `voice::vcf`, `seq`, and `clock` remain absent.
+- The protocol adds `ParamSet` IDs for ADSR values, envelope trigger mode, amp source select, master volume, LFO rate, and LFO waveform. No new message types — the tagged-union is unchanged.
+- The UI gains an envelope panel (4 sliders + trigger-mode switch), an amp panel (env/gate switch + volume), and an LFO panel (rate + waveform).
 
-No part of the iteration 2 scope contradicts the long-term shape; we add modules and parameter IDs without restructuring the boundary.
+No part of the iteration 3 scope contradicts the long-term shape; we add modules and parameter IDs without restructuring the boundary.
 
 ### DSP Code
 
