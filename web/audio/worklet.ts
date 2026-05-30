@@ -1,4 +1,8 @@
 /// <reference path="./worklet-types.d.ts" />
+// MUST be first: installs the TextDecoder/TextEncoder polyfill onto the worklet
+// global before the wasm-bindgen glue (imported below) instantiates one at
+// module top-level. See worklet-polyfill.ts for why.
+import "./worklet-polyfill";
 import init, { Engine } from "../wasm/mm01_dsp.js";
 
 class MM01Processor extends AudioWorkletProcessor {
