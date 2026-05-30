@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 mod msg;
+mod primitives;
 mod voice;
 
 use voice::Voice;
@@ -49,8 +50,15 @@ impl Engine {
 
 impl Engine {
     fn set_param(&mut self, id: u8, value: f32) {
-        if id == msg::PARAM_MASTER_GAIN {
-            self.master_gain = value.clamp(0.0, 1.0);
+        match id {
+            msg::PARAM_MASTER_GAIN => self.master_gain = value.clamp(0.0, 1.0),
+            msg::PARAM_FOOTAGE => self.voice.set_footage(value.round() as u8),
+            msg::PARAM_SUB_SHAPE => self.voice.set_sub_shape(value.round() as u8),
+            msg::PARAM_MIX_SAW => self.voice.set_mix_saw(value),
+            msg::PARAM_MIX_PULSE => self.voice.set_mix_pulse(value),
+            msg::PARAM_MIX_SUB => self.voice.set_mix_sub(value),
+            msg::PARAM_MIX_NOISE => self.voice.set_mix_noise(value),
+            _ => {}
         }
     }
 }

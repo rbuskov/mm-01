@@ -116,3 +116,74 @@ html, body {
   margin: 0;
 }
 .key.black.active { background: var(--key-black-active); }
+
+/* ── Iteration 2: source-section panel ──────────────────────────────── */
+.panel.panel-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 20px 24px;
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9aa0a6;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid #00000060;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.seg-btn {
+  background: #1f2227;
+  color: var(--text);
+  border: none;
+  border-right: 1px solid #00000050;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.seg-btn:last-child { border-right: none; }
+.seg-btn:hover { background: #2a2e34; }
+.seg-btn.active {
+  background: var(--accent);
+  color: #1a1c1f;
+  font-weight: 600;
+}
+
+.mixer {
+  display: flex;
+  gap: 18px;
+}
+.mixer-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.mixer-slider {
+  -webkit-appearance: slider-vertical;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 24px;
+  height: 110px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.mixer-name {
+  font-size: 12px;
+  color: #c4c8cc;
+}

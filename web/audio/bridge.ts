@@ -10,7 +10,14 @@ export const TAG_NOTE_ON = 0;
 export const TAG_NOTE_OFF = 1;
 export const TAG_PARAM_SET = 2;
 
+// ParamSet IDs — must match crates/mm01-dsp/src/msg.rs.
 export const PARAM_MASTER_GAIN = 0;
+export const PARAM_FOOTAGE = 1; // 0→16′, 1→8′, 2→4′, 3→2′
+export const PARAM_SUB_SHAPE = 2; // 0→sq −1, 1→sq −2, 2→pulse −2
+export const PARAM_MIX_SAW = 3;
+export const PARAM_MIX_PULSE = 4;
+export const PARAM_MIX_SUB = 5;
+export const PARAM_MIX_NOISE = 6;
 
 export function encodeNoteOn(note: number, velocity = 100): Uint8Array {
   return new Uint8Array([TAG_NOTE_ON, note & 0x7f, velocity & 0x7f]);
