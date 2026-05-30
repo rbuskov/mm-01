@@ -7,7 +7,7 @@ mod vco;
 
 use eg::Eg;
 use lfo::Lfo;
-use mixer::{clamp_level, Mixer};
+use mixer::{level_taper, Mixer};
 use noise::Noise;
 use vca::Vca;
 use vco::Vco;
@@ -56,20 +56,20 @@ impl Voice {
         self.vco.set_sub_shape(idx);
     }
 
-    pub fn set_mix_saw(&mut self, level: f32) {
-        self.mixer.saw = clamp_level(level);
+    pub fn set_mix_saw(&mut self, position: f32) {
+        self.mixer.saw = level_taper(position);
     }
 
-    pub fn set_mix_pulse(&mut self, level: f32) {
-        self.mixer.pulse = clamp_level(level);
+    pub fn set_mix_pulse(&mut self, position: f32) {
+        self.mixer.pulse = level_taper(position);
     }
 
-    pub fn set_mix_sub(&mut self, level: f32) {
-        self.mixer.sub = clamp_level(level);
+    pub fn set_mix_sub(&mut self, position: f32) {
+        self.mixer.sub = level_taper(position);
     }
 
-    pub fn set_mix_noise(&mut self, level: f32) {
-        self.mixer.noise = clamp_level(level);
+    pub fn set_mix_noise(&mut self, position: f32) {
+        self.mixer.noise = level_taper(position);
     }
 
     pub fn set_amp_source(&mut self, idx: u8) {
