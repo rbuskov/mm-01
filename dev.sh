@@ -12,6 +12,10 @@
 # worklet bundle is exactly what breaks audio start ("node name 'mm01' is not
 # defined"). The dev server then serves the freshly-built artifacts.
 #
+# Before starting a server we free its port: killing Vite (or its parent) can
+# leave an orphaned node process holding the port, after which Vite would drift
+# to 5174, 5175… — so each run reclaims the port and pins it with --strictPort.
+#
 # Usage:
 #   ./dev.sh            # build everything, then start the Vite dev server
 #   ./dev.sh build      # build everything, then produce a production build (web/dist)
@@ -19,9 +23,28 @@
 #
 set -euo pipefail
 
+VITE_PORT=5173    # dev server
+PREVIEW_PORT=4173 # vite preview
+
 # Always operate from the repo root (this script's directory).
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT/web"
+
+# Kill whatever is listening on the given TCP port (a stale/orphaned Vite).
+free_port() {
+  local port="$1" pids=""
+  if command -v lsof >/dev/null 2>&1; then
+    pids=$(lsof -ti "tcp:${port}" 2>/dev/null || true)
+  elif command -v fuser >/dev/null 2>&1; then
+    pids=$(fuser "${port}/tcp" 2>/dev/null || true)
+  fi
+  if [ -n "$pids" ]; then
+    echo "==> Freeing port ${port} (killing: $(echo $pids | tr '\n' ' '))"
+    kill $pids 2>/dev/null || true
+    sleep 0.5
+    kill -9 $pids 2>/dev/null || true  # force-kill any survivors
+  fi
+}
 
 # --- Tooling checks -------------------------------------------------------
 for tool in npm npx wasm-pack cargo; do
@@ -61,8 +84,9 @@ build_all() {
 case "${1:-dev}" in
   dev)
     build_all
-    echo "==> Starting Vite dev server"
-    exec npx vite
+    free_port "$VITE_PORT"
+    echo "==> Starting Vite dev server on :$VITE_PORT"
+    exec npx vite --port "$VITE_PORT" --strictPort
     ;;
   build)
     build_all
@@ -71,9 +95,10 @@ case "${1:-dev}" in
     ;;
   preview)
     build_all
-    echo "==> Producing production build, then serving it"
     npx vite build
-    exec npx vite preview
+    free_port "$PREVIEW_PORT"
+    echo "==> Serving production preview on :$PREVIEW_PORT"
+    exec npx vite preview --port "$PREVIEW_PORT" --strictPort
     ;;
   *)
     echo "usage: ./dev.sh [dev|build|preview]" >&2
